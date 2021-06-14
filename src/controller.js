@@ -1,21 +1,10 @@
 
-const { app, ipcMain, BrowserWindow, BrowserView, dialog } = require('electron')
-const path = require('path')
-const URL = require('url').URL
-const store = new (require('electron-store'))()
+const { app, ipcMain, BrowserWindow, dialog } = require('electron')
 const got = require('got')
 const urljoin = require('url-join')
 const validUrl = require('valid-url')
-
-const guideViewUrl = new URL(
-  path.join(__dirname, './app/index.html'),
-  'file:'
-)
-
-const loadViewUrl = new URL(
-  path.join(__dirname, './app/load.html'),
-  'file:'
-)
+const store = require('./store')
+const resource = require('./resource')
 
 let badgeShow = false
 
@@ -32,7 +21,7 @@ const preLoadPage = (win, url, errJump) => {
     backgroundColor: '#2f343d',
     resizable: false,
     webPreferences: {
-      preload: path.join(__dirname, './app/script/load.js'),
+      preload: resource.getLoadScriptPath(),
       // close isolation to preload js
       contextIsolation: false,
     },
@@ -47,12 +36,12 @@ const preLoadPage = (win, url, errJump) => {
       loading.hide()
       loading.close()
       loading = null
-      store.set('currentWorkSpaceUrl', url)
+      store.saveWsAccessUrl(url.toString())
     })
     // long loading html
     win.loadURL(url.toString())
   })
-  loading.loadURL(loadViewUrl.toString())
+  loading.loadURL(resource.getLoadViewUrl())
   loading.show()
 }
 
@@ -64,15 +53,15 @@ const jumpToGuidePage = (win) => {
   if (!win) {
     win = BrowserWindow.getFocusedWindow()
   }
-  loadPage(win, guideViewUrl)
+  loadPage(win, resource.getGuideViewUrl())
 }
 
 const logout = () => {
-  store.delete('currentWorkSpaceUrl')
+  store.clearWsAccessUrl()
 }
 
 const initPage = (win) => {
-  const url = store.get('currentWorkSpaceUrl')
+  const url = store.getWsAccessUrl()
   if (url) {
     preLoadPage(win, url, jumpToGuidePage)
   } else {
@@ -113,7 +102,7 @@ ipcMain.on('guideGoToRcWebEvent', async (event, arg) => {
   }
 })
 
-ipcMain.on('revNewMessageEvent', (_, arg) => {
+ipcMain.on('revNewMessageEvent', () => {
   if (badgeShow) {
     const badge = app.dock.getBadge();
     if (badge === '') {

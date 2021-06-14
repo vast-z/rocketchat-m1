@@ -1,24 +1,32 @@
 const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
-const menu = require('./menu')
-const controller = require('./controller')
+const resource = require('./src/resource')
+const menu = require('./src/menu')
+const controller = require('./src/controller')
+const store = require('./src/store')
 
 // set menu
 Menu.setApplicationMenu(Menu.buildFromTemplate(menu.getTemplate(app.name)))
 
 function createWindow() {
+
+  const defaultSize = {
+    w: 1000,
+    h: 800
+  }
+  const size = store.getWindowSize() ?? defaultSize
+
   // 创建浏览器窗口
   let win = new BrowserWindow({
-    width: 1000,
-    height: 800,
+    width: size.w,
+    height: size.h,
     show: false,
     resizable: true,
     fullscreen: false,
     frame: true,
     autoHideMenuBar: false,
     webPreferences: {
-      preload: path.join(__dirname, './app/script/main.js'),
-      // close isolation to preload js
+      preload: resource.getGuideScriptPath(),
       contextIsolation: false,
     },
     backgroundColor: '#2f343d'
@@ -33,7 +41,7 @@ function createWindow() {
 
   let willQuitApp = false
 
-  win.on('close', (e) => { 
+  win.on('close', (e) => {
     if (willQuitApp) {
       win = null
     } else {
@@ -44,14 +52,16 @@ function createWindow() {
   })
 
   win.on('closed', () => {
-   win = null
+    const { width, height } = win.getContentBounds()
+    store.saveWindowSize(width, height)
+    win = null
   })
 
   app.on('activate', () => {
     controller.setBadgeStatus(false)
     win.show()
   })
-  
+
   app.on('before-quit', () => {
     willQuitApp = true
   })

@@ -21,7 +21,8 @@
   },
   "devDependencies": {
     "electron": "13.1.1",
-    "electron-builder": "^22.11.7"
+    "electron-builder": "^22.11.7",
+    "eslint": "^7.28.0"
   },
   "build": {
     "productName": "Rocket.Chat.VV",
