@@ -4,6 +4,8 @@ Rocket. Chat Electron does not have Mac (Apple Silicon) version at present, so i
 The Rossta version has a lot of problems, in addition to the stuttering, memory leaks for a long time.
 Provide an Electron 13 packaged web version for daily use.
 
+##Release
+mac-universal [release](https://github.com/vast-z/rocketchat-m1/releases)
 
 ##How to switch the workspace?
 Click window-> Switch Server
