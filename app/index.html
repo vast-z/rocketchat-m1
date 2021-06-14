@@ -1,0 +1,82 @@
+<html>
+
+<head>
+  <title>Hello World!</title>
+  <style>
+    body {
+      background: #2f343d;
+      /*min-width: 600px;*/
+      /*min-height: 600px;*/
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .connect-box {
+      width: 400px;
+      background: white;
+      padding: 60px 30px 30px;
+      text-align: center;
+    }
+
+    .connect-btn {
+      background: #007bff;
+      color: white;
+      padding: 15px 20px;
+      border: none;
+      font-size: 18px;
+      line-height: 18px;
+      width: 120px;
+      height: 50px;
+    }
+    #connect-loading {
+      display: none;
+    }
+    input {
+      display: block;
+      height: 52px;
+      padding: 12px;
+      width: 100%;
+      border: 2px solid #007bff;
+      font-size: 16px;
+      margin-bottom: 40px;
+      outline: none;
+      font-weight: normal;
+    }
+
+    input:focus {
+      box-shadow: 0 2px 2px 2px rgba(0, 123, 255, .1);
+    }
+
+    .logo {
+      height: 50px;
+      margin-bottom: 25px;
+    }
+
+    .label {
+      margin-bottom: 10px;
+      text-align: left;
+      font-weight: 400;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="connect-box">
+    <img class="logo" src="../static/logo.svg" alt="">
+    <div class="label">Enter your server URL</div>
+    <input type="text" id="i-url" placeholder="https://open.rokec.chat/" />
+    <button class="connect-btn" onclick="clickGoToRcWebHandler()">
+      <span id="connect-text">Connect</span>
+      <img id="connect-loading" src="../static/loading.svg" style="height: 8px" alt="">
+    </button>
+  </div>
+</body>
+<script>
+  const input = document.getElementById('i-url');
+  input.addEventListener('keypress', e => {
+    if(e.code === 'Enter') clickGoToRcWebHandler()
+  });
+</script>
+</html>

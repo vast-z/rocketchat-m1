@@ -1,0 +1,36 @@
+{
+  "name": "rocketchat-m1-temp",
+  "version": "1.0.0",
+  "description": "rocketchat package web app",
+  "main": "main.js",
+  "scripts": {
+    "dev": "electron .",
+    "clean": "rimraf build",
+    "build": "npm run clean && electron-builder --universal"
+  },
+  "keywords": [
+    "Electron"
+  ],
+  "author": "pengweifu",
+  "license": "ISC",
+  "dependencies": {
+    "electron-store": "^8.0.0",
+    "got": "^11.8.2",
+    "url-join": "^4.0.1",
+    "valid-url": "^1.0.9"
+  },
+  "devDependencies": {
+    "electron": "13.1.1",
+    "electron-builder": "^22.11.7"
+  },
+  "build": {
+    "productName": "Rocket.Chat.VV",
+    "appId": "vv.rocket.chat",
+    "directories": {
+      "output": "build"
+    },
+    "mac": {
+      "icon": "resource/icons/Rocket.Chat.icns"
+    }
+  }
+}
