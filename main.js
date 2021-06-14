@@ -17,7 +17,7 @@ function createWindow() {
     frame: true,
     autoHideMenuBar: false,
     webPreferences: {
-      preload: path.join(__dirname, './app/main.js'),
+      preload: path.join(__dirname, './app/script/main.js'),
       // close isolation to preload js
       contextIsolation: false,
     },

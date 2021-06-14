@@ -32,7 +32,7 @@ const preLoadPage = (win, url, errJump) => {
     backgroundColor: '#2f343d',
     resizable: false,
     webPreferences: {
-      preload: path.join(__dirname, './app/load.js'),
+      preload: path.join(__dirname, './app/script/load.js'),
       // close isolation to preload js
       contextIsolation: false,
     },
