@@ -74,9 +74,14 @@
   </div>
 </body>
 <script>
-  const input = document.getElementById('i-url');
+  const input = document.getElementById('i-url')
   input.addEventListener('keypress', e => {
     if(e.code === 'Enter') clickGoToRcWebHandler()
-  });
+  })
+  loadInitData((arg) => {
+    if (arg.workspace) {
+      input.value = arg.workspace.url
+    }
+  })
 </script>
 </html>

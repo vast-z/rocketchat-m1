@@ -1,5 +1,4 @@
 const { app, BrowserWindow, Menu } = require('electron')
-const path = require('path')
 const resource = require('./src/resource')
 const menu = require('./src/menu')
 const controller = require('./src/controller')
@@ -42,6 +41,8 @@ function createWindow() {
   let willQuitApp = false
 
   win.on('close', (e) => {
+    const { width, height } = win.getContentBounds()
+    store.saveWindowSize(width, height)
     if (willQuitApp) {
       win = null
     } else {
@@ -52,8 +53,6 @@ function createWindow() {
   })
 
   win.on('closed', () => {
-    const { width, height } = win.getContentBounds()
-    store.saveWindowSize(width, height)
     win = null
   })
 

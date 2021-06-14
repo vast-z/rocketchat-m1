@@ -2,13 +2,20 @@
 const hook = require('./hook')
 const { ipcRenderer } = require('electron')
 
+function loadInitData(cb) {
+  ipcRenderer.once('loadInitData-reply', (_, arg) => {
+    cb(arg)
+  })
+  ipcRenderer.send('loadInitData')
+}
+
 function clickGoToRcWebHandler() {
   const connectTextEl = document.getElementById('connect-text')
   const connectLoadingEl = document.getElementById('connect-loading')
   connectTextEl.style.display = 'none'
   connectLoadingEl.style.display = 'inline-block'
   ipcRenderer.send('guideGoToRcWebEvent', document.getElementById('i-url').value)
-  const t = setTimeout(() => {
+  let t = setTimeout(() => {
     ipcRenderer.removeAllListeners()
     connectTextEl.style.display = 'inline-block'
     connectLoadingEl.style.display = 'none'
@@ -22,11 +29,11 @@ function clickGoToRcWebHandler() {
 }
 
 // use websocket hook to notify user
-hook.getWsHook().after = (messageEvent, url, wsObject) => {
+// standard (messageEvent, url, wsObject)
+hook.getWsHook().after = (messageEvent) => {
   try {
     const tmp = messageEvent.data.match(/a\[(\S*)\]/)[1]
     const body = JSON.parse(JSON.parse(tmp))
-    console.log(body)
     if (body.collection === 'stream-notify-user') {
       if (body.fields && body.fields.args && body.fields.args[1] && body.fields.args[1].alert) {
         ipcRenderer.send('revNewMessageEvent')
@@ -38,4 +45,5 @@ hook.getWsHook().after = (messageEvent, url, wsObject) => {
   return messageEvent;
 }
 
+global.loadInitData = loadInitData
 global.clickGoToRcWebHandler = clickGoToRcWebHandler

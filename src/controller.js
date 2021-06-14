@@ -36,7 +36,6 @@ const preLoadPage = (win, url, errJump) => {
       loading.hide()
       loading.close()
       loading = null
-      store.saveWsAccessUrl(url.toString())
     })
     // long loading html
     win.loadURL(url.toString())
@@ -57,13 +56,13 @@ const jumpToGuidePage = (win) => {
 }
 
 const logout = () => {
-  store.clearWsAccessUrl()
+  store.clearWorkspace()
 }
 
 const initPage = (win) => {
-  const url = store.getWsAccessUrl()
-  if (url) {
-    preLoadPage(win, url, jumpToGuidePage)
+  const ws = store.getWorkspace()
+  if (ws && ws.url) {
+    preLoadPage(win, ws.url, jumpToGuidePage)
   } else {
     jumpToGuidePage(win)
   }
@@ -86,6 +85,10 @@ ipcMain.on('guideGoToRcWebEvent', async (event, arg) => {
     got(apiInfoUrl.toString()).json().then(res => {
       if (res.version) {
         const win = BrowserWindow.getFocusedWindow()
+        store.saveWorkspace({
+          version: res.version,
+          url: arg
+        })
         preLoadPage(win, arg, jumpToGuidePage)
       } else {
         dialog.showErrorBox("Error", "Please enter correct url")
@@ -111,6 +114,11 @@ ipcMain.on('revNewMessageEvent', () => {
       app.dock.setBadge((parseInt(badge) + 1).toString())
     }
   }
+})
+
+ipcMain.on('loadInitData', (event) => {
+  const ws = store.getWorkspace()
+  event.reply('loadInitData-reply', { workspace: ws })
 })
 
 module.exports = {

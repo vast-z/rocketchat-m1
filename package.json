@@ -1,6 +1,6 @@
 {
   "name": "rocketchat-m1-temp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "rocketchat package web app",
   "main": "main.js",
   "scripts": {
