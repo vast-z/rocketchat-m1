@@ -10,7 +10,7 @@ const getWorkspace = () => {
 }
 
 const clearWorkspace = () => {
-	store.delete('ws:access:url')
+	store.delete('workspace')
 }
 
 const saveWindowSize = (w, h) => {
