@@ -5,9 +5,9 @@ const controller = require('./src/controller')
 const store = require('./src/store')
 
 // set menu
-Menu.setApplicationMenu(Menu.buildFromTemplate(menu.getTemplate(app.name)))
+Menu.setApplicationMenu(Menu.buildFromTemplate(menu.getTemplate('Rocket.Chat.VV')))
 
-function createWindow() {
+const createWindow = () => {
 
   const defaultSize = {
     w: 1000,
@@ -24,11 +24,11 @@ function createWindow() {
     fullscreen: false,
     frame: true,
     autoHideMenuBar: false,
+    // backgroundColor: '#2f343d',
     webPreferences: {
       preload: resource.getGuideScriptPath(),
-      contextIsolation: false,
-    },
-    backgroundColor: '#2f343d'
+      contextIsolation: false
+    }
   })
 
   // 加载src/index.html文件

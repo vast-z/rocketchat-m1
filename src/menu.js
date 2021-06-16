@@ -1,11 +1,11 @@
 
 const controller = require('./controller')
-const isMac = process.platform === 'darwin'
+const isMac = require('./util').isMac
 
 const getTemplate = (name) => {
 	return [
 		// { role: 'appMenu' }
-		...(isMac ? [{
+		...(isMac() ? [{
 			label: name,
 			submenu: [
 				{ role: 'about' },
@@ -30,7 +30,7 @@ const getTemplate = (name) => {
 				{ role: 'cut' },
 				{ role: 'copy' },
 				{ role: 'paste' },
-				...(isMac ? [
+				...(isMac() ? [
 					{ role: 'pasteAndMatchStyle' },
 					{ role: 'delete' },
 					{ role: 'selectAll' },
@@ -70,7 +70,7 @@ const getTemplate = (name) => {
 			submenu: [
 				{ role: 'minimize' },
 				{ role: 'zoom' },
-				...(isMac ? [
+				...(isMac() ? [
 					{ type: 'separator' },
 					{ role: 'front' },
 					{ type: 'separator' },

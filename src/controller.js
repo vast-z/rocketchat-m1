@@ -5,6 +5,7 @@ const urljoin = require('url-join')
 const validUrl = require('valid-url')
 const store = require('./store')
 const resource = require('./resource')
+const isMac = require('./util').isMac
 
 let badgeShow = false
 
@@ -69,6 +70,10 @@ const initPage = (win) => {
 }
 
 function setBadgeStatus(show) {
+  if (!isMac()) {
+    // expect mac
+    return
+  }
   const temp = Boolean(show)
   if (badgeShow === temp) {
     return
@@ -106,6 +111,10 @@ ipcMain.on('guideGoToRcWebEvent', async (event, arg) => {
 })
 
 ipcMain.on('revNewMessageEvent', () => {
+  if (!isMac()) {
+    // expect mac
+    return
+  }
   if (badgeShow) {
     const badge = app.dock.getBadge();
     if (badge === '') {

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "electron .",
     "clean": "rimraf build",
-    "build": "npm run clean && electron-builder --universal"
+    "build-mac": "npm run clean && electron-builder --universal",
+    "build-win": "npm run clean && electron-builder -w --x64"
   },
   "keywords": [
     "Electron"
@@ -32,6 +33,12 @@
     },
     "mac": {
       "icon": "resource/icons/Rocket.Chat.icns"
+    },
+    "win": {
+      "icon": "resource/icons/Rocket.Chat.ico",
+      "target": [
+        "nsis"
+      ]
     }
   }
 }

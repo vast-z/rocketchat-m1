@@ -11,6 +11,7 @@ module.exports = {
     "rules": {
     },
     "globals": {
-        "__dirname": true
+        "__dirname": true,
+        "process": true
     }
 };
