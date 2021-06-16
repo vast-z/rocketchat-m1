@@ -20,7 +20,6 @@ const createWindow = () => {
   }
   const size = store.getWindowSize() ?? defaultSize
 
-  // 创建浏览器窗口
   win = new BrowserWindow({
     width: size.w,
     height: size.h,
