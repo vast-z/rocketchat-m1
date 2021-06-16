@@ -5,9 +5,6 @@ const urljoin = require('url-join')
 const validUrl = require('valid-url')
 const store = require('./store')
 const resource = require('./resource')
-const isMac = require('./util').isMac
-
-let badgeShow = false
 
 const preLoadPage = (win, url, errJump) => {
   const { x, y, width, height } = win.getContentBounds()
@@ -69,21 +66,6 @@ const initPage = (win) => {
   }
 }
 
-function setBadgeStatus(show) {
-  if (!isMac()) {
-    // expect mac
-    return
-  }
-  const temp = Boolean(show)
-  if (badgeShow === temp) {
-    return
-  }
-  if (!temp) {
-    app.dock.setBadge('')
-  }
-  badgeShow = temp
-}
-
 ipcMain.on('guideGoToRcWebEvent', async (event, arg) => {
   if (validUrl.isUri(arg)) {
     const apiInfoUrl = urljoin(arg, '/api/info')
@@ -110,18 +92,27 @@ ipcMain.on('guideGoToRcWebEvent', async (event, arg) => {
   }
 })
 
-ipcMain.on('revNewMessageEvent', () => {
-  if (!isMac()) {
-    // expect mac
+
+let badgeShow = false
+let msgCount = 0
+
+function setBadgeStatus(show) {
+  const temp = Boolean(show)
+  if (badgeShow === temp) {
     return
   }
+  if (!temp) {
+    msgCount = 0
+    app.dock.setBadge('')
+  }
+  badgeShow = temp
+}
+
+ipcMain.on('revNewMessageEvent', () => {
   if (badgeShow) {
-    const badge = app.dock.getBadge();
-    if (badge === '') {
-      app.dock.setBadge('1');
-    } else {
-      app.dock.setBadge((parseInt(badge) + 1).toString())
-    }
+    // not support on win
+    // const badge = app.dock.getBadge();
+    app.dock.setBadge((++msgCount).toString());
   }
 })
 
