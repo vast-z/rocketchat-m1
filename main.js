@@ -3,9 +3,14 @@ const resource = require('./src/resource')
 const menu = require('./src/menu')
 const controller = require('./src/controller')
 const store = require('./src/store')
+const util = require('./src/util')
 
 // set menu
 Menu.setApplicationMenu(Menu.buildFromTemplate(menu.getTemplate('Rocket.Chat.VV')))
+
+let win = null
+let willQuitApp = false
+let tray = null
 
 const createWindow = () => {
 
@@ -16,7 +21,7 @@ const createWindow = () => {
   const size = store.getWindowSize() ?? defaultSize
 
   // 创建浏览器窗口
-  let win = new BrowserWindow({
+  win = new BrowserWindow({
     width: size.w,
     height: size.h,
     show: false,
@@ -24,7 +29,7 @@ const createWindow = () => {
     fullscreen: false,
     frame: true,
     autoHideMenuBar: false,
-    // backgroundColor: '#2f343d',
+    backgroundColor: '#2f343d',
     webPreferences: {
       preload: resource.getGuideScriptPath(),
       contextIsolation: false
@@ -38,7 +43,7 @@ const createWindow = () => {
     win.show()
   })
 
-  let willQuitApp = false
+  willQuitApp = false
 
   win.on('close', (e) => {
     const { width, height } = win.getContentBounds()
@@ -46,7 +51,7 @@ const createWindow = () => {
     if (willQuitApp) {
       win = null
     } else {
-      controller.setBadgeStatus(true)
+      controller.setNotificationStatus(true)
       e.preventDefault()
       win.hide()
     }
@@ -57,14 +62,40 @@ const createWindow = () => {
   })
 
   app.on('activate', () => {
-    controller.setBadgeStatus(false)
+    controller.setNotificationStatus(false)
     win.show()
   })
 
   app.on('before-quit', () => {
-    willQuitApp = true
+    if (util.isMac()) {
+      willQuitApp = true
+    }
   })
+
+  if (util.isWin()) {
+    const { Tray, nativeImage } = require('electron')
+    tray = new Tray(
+      nativeImage.createFromPath(resource.getIcoPath())
+    )
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: 'Quit', click: () => {
+          willQuitApp = true
+          app.quit()
+        }
+      }
+    ])
+    tray.setToolTip('Rocket.Chat.VV')
+    tray.on('click', () => {
+      win.show()
+    })
+    tray.on('right-click', () => {
+      tray.popUpContextMenu(contextMenu)
+    })
+  }
 }
 
 app.whenReady().then(createWindow)
+
+
 

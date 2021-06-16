@@ -5,6 +5,7 @@ const urljoin = require('url-join')
 const validUrl = require('valid-url')
 const store = require('./store')
 const resource = require('./resource')
+const util = require('./util')
 
 const preLoadPage = (win, url, errJump) => {
   const { x, y, width, height } = win.getContentBounds()
@@ -78,16 +79,16 @@ ipcMain.on('guideGoToRcWebEvent', async (event, arg) => {
         })
         preLoadPage(win, arg, jumpToGuidePage)
       } else {
-        dialog.showErrorBox("Error", "Please enter correct url")
+        dialog.showErrorBox('Error', 'Please enter correct url')
       }
     }).catch(e => {
       console.debug(e)
-      dialog.showErrorBox("Error", "Please retry, use correct rocket url")
+      dialog.showErrorBox('Error', 'Please retry, use correct rocket url' + e.toString())
     }).finally(() => {
       event.reply('guideGoToRcWebEvent-reply')
     })
   } else {
-    dialog.showErrorBox("Error", "Please enter correct url")
+    dialog.showErrorBox('Error', 'Please enter correct url')
     event.reply('guideGoToRcWebEvent-reply')
   }
 })
@@ -96,14 +97,16 @@ ipcMain.on('guideGoToRcWebEvent', async (event, arg) => {
 let badgeShow = false
 let msgCount = 0
 
-function setBadgeStatus(show) {
+function setNotificationStatus(show) {
   const temp = Boolean(show)
   if (badgeShow === temp) {
     return
   }
   if (!temp) {
     msgCount = 0
-    app.dock.setBadge('')
+    if (util.isMac()) {
+      app.dock.setBadge('')
+    }
   }
   badgeShow = temp
 }
@@ -111,8 +114,9 @@ function setBadgeStatus(show) {
 ipcMain.on('revNewMessageEvent', () => {
   if (badgeShow) {
     // not support on win
-    // const badge = app.dock.getBadge();
-    app.dock.setBadge((++msgCount).toString());
+    if (util.isMac()) {
+      app.dock.setBadge((++msgCount).toString());
+    }
   }
 })
 
@@ -125,5 +129,5 @@ module.exports = {
   logout,
   jumpToGuidePage,
   initPage,
-  setBadgeStatus
+  setNotificationStatus
 }
